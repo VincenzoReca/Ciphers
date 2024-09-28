@@ -1,47 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-// Encrypts the sentence using a Caesar cipher with a given delay
-char* cipher(char* sentence, int delay);
+char* cipher(char* Sentence, int Delay);
 
 int main() {
-    char frase[50];        // Buffer to store the input sentence
-    int spostamento, i = 0; // spostamento is the shift amount (delay)
-    
-    // Getting the sentence to encrypt from the user
+    char* sentence = malloc(50 * sizeof(char) + 1);       // Allocate memory for the input sentence
+    char* encryptedSentence;                              // Do not allocate here; let cipher allocate it.
+    int delay;
+
     printf("Insert the sentence to encrypt: \n");
-    fgets(frase, 50, stdin);    // Reads up to 50 characters
-    fflush(stdin);              // Clears the input buffer
-    system("cls");              // Clears the console screen
+    fgets(sentence, 50, stdin);
+    sentence[strcspn(sentence, "\n")] = '\0';             // Remove newline character from input
 
-    // Getting the shift value (delay) from the user
-    printf("Insert the delay to encrypt the sentence: \n");
-    scanf("%d", &spostamento);      // Reads the delay value
+    printf("Insert the delay to apply(integer): \n");
+    scanf("%d", &delay);
 
-    cipher(frase, spostamento);     // Encrypts the sentence using the Caesar cipher
-    puts(frase);                    // Prints the encrypted sentence
+    encryptedSentence = cipher(sentence, delay);          // Call the cipher function to encrypt the sentence
+    puts(encryptedSentence);                              // Display the encrypted sentence
 
+    free(sentence);
+    free(encryptedSentence);  
+                                
     return 0;
 }
 
-// Function to apply a Caesar cipher to the sentence
-char* cipher(char* sentence, int delay) {
-    int i = 0;
+char* cipher(char* Sentence, int Delay) {
+    int length = strlen(Sentence);                        // Get the length of the input sentence
+    char* encrypted = malloc(length + 1);                 // Allocate memory for the encrypted string
 
-    // Iterating through each character in the sentence
-    while(sentence[i] != '\0') {
-
-        // Shifting uppercase letters ('A' to 'Z')
-        if(sentence[i] >= 65 && sentence[i] <= 90) {
-            sentence[i] = (((sentence[i] - 65 + delay) % 26 + 26) % 26) + 65;
-        
-        // Shifting lowercase letters ('a' to 'z')
-        } else if(sentence[i] >= 97 && sentence[i] <= 122) {
-            sentence[i] = (((sentence[i] - 97 + delay) % 26 + 26) % 26) + 97;
-        }
-
-        i++;            // Move to the next character
+    if (encrypted == NULL) {                              // Check if malloc was successful
+        printf("Memory allocation failed!\n");
+        exit(1);
     }
 
-    return sentence;    // Return the modified (encrypted) sentence
+    for (int i = 0; i < length; i++) {
+        if (Sentence[i] >= 65 && Sentence[i] <= 90) {   // Encrypt uppercase letters
+            encrypted[i] = ((Sentence[i] - 65 + Delay) % 26) + 65;
+        } else if (Sentence[i] >= 97 && Sentence[i] <= 122) { // Encrypt lowercase letters
+            encrypted[i] = ((Sentence[i] - 97 + Delay) % 26) + 97;
+        } else {
+            encrypted[i] = Sentence[i];                   // Non-alphabetic characters remain unchanged
+        }
+    }
+
+    encrypted[length] = '\0';                             // Null-terminate the encrypted string
+    return encrypted;
 }
