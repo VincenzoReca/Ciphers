@@ -30,6 +30,10 @@ int main() {
     printf("The encrypted sentence is:\n");
     puts(encryptedSentence);                                            // Outputs the encrypted sentence
 
+    free(key);
+    free(encryptedSentence);
+    free(sentence);
+
     return 0;
 }
 
@@ -70,15 +74,14 @@ char* cipher(char* Sentence, char* Key) {
     
     // Encrypt each character
     for (int i = 0; i < length; i++) {
-        if (Sentence[i] >= 'A' && Sentence[i] <= 'Z') {  
-            encrypted[i] = (((Sentence[i] - 'A' + (Key[i] - 'A')) % 26) + 'A');  // Uppercase letters
-        } else if (Sentence[i] >= 'a' && Sentence[i] <= 'z') {  
-            encrypted[i] = (((Sentence[i] - 'a' + (Key[i] - 'a')) % 26) + 'a');  // Lowercase letters
+        if (Sentence[i] >= 65 && Sentence[i] <= 90) {  
+            encrypted[i] = (((Sentence[i] - 65 + (Key[i] - 65)) % 26) + 65);  // Uppercase letters
+        } else if (Sentence[i] >= 97 && Sentence[i] <= 122) {  
+            encrypted[i] = (((Sentence[i] - 97 + (Key[i] - 97)) % 26) + 97);  // Lowercase letters
         } else {
             encrypted[i] = Sentence[i];                                         // Non-alphabetic characters are copied unchanged
         }
     }
     encrypted[length] = '\0';                                                   // Null-terminates the encrypted string
-
     return encrypted;
 }
